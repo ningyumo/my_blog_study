@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{# 页面标题 #}
+{% block title %}
+    我的网站|首页
+{% endblock %}
+
+{# 头部扩展 #}
+{% block head-expend %}
+    <link rel="stylesheet" type="text/css" href="{% static "css/home.css" %}">
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts-3d.js"></script>
+{% endblock %}
+
+{% block nav_home_active %}
+    active
+{% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+    <h3 class="home-content">欢迎来到我的网站，随便看</h3>
+    <!-- 图表容器 DOM -->
+    <div id="container"></div>
+    <!-- 引入 highcharts.js -->
+    <script src="http://cdn.hcharts.cn/highcharts/highcharts.js"></script>
+    <script>
+        // 图表配置
+        var chart = new Highcharts.Chart({
+            chart: {
+                renderTo: 'container',
+                type: 'column',
+                options3d: {
+                    enabled: true,
+                    alpha: 0,
+                    beta: 30,
+                    depth: 60,
+                    viewDistance: 25
+                }
+            },
+            title: {
+                text: '七日阅读数量'
+            },
+            plotOptions: {
+                line: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                },
+                column: {
+                    depth: 25
+                }
+            },
+             xAxis: {
+                categories: {{ date|safe }}   // x 轴分类
+            },
+            yAxis: {
+                title: {
+                    text: '阅读数'                // y 轴标题
+                }
+            },
+            series: [{
+                name:'阅读量',
+                data: {{ read_num_total }}
+            }],
+            credits:{
+                enabled:false
+            },
+            legend:{
+                enabled:false
+            }
+        });
+        // 图表初始化函数
+        var chart = Highcharts.chart('container', options);
+    </script>
+    <div class="container">
+        <div class="row" >
+            <!-- 24小时热门博客 -->
+            <div class="col-md-3">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>24小时热门博客</span>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for hot_data_24hours in hot_datas_24hours %}
+                                <li>
+                                    <a href="{% url 'blog:blog_detail' hot_data_24hours.blog__pk %}">
+                                        {{ hot_data_24hours.blog__title|truncatechars:15 }}({{ hot_data_24hours.total_click }})
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <p>暂无热门</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 7日热门博客 -->
+            <div class="col-md-3 col-md-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>7日热门博客</span>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for hot_data_week in hot_datas_week %}
+                                <li>
+                                    <a href="{% url 'blog:blog_detail' hot_data_week.blog__pk %}">
+                                        {{ hot_data_week.blog__title|truncatechars:15 }}({{ hot_data_week.total_click }})
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <p>暂无热门</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- 30日热门博客 -->
+            <div class="col-md-3 col-md-offset-1">
+                <div class="panel panel-default">
+                    <div class="panel-heading">
+                        <span>30日热门博客</span>
+                    </div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for hot_data_month in hot_datas_month %}
+                                <li>
+                                    <a href="{% url 'blog:blog_detail' hot_data_month.blog__pk %}">
+                                        {{ hot_data_month.blog__title|truncatechars:15 }}({{ hot_data_month.total_click }})
+                                    </a>
+                                </li>
+                            {% empty %}
+                                <p>暂无热门</p>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

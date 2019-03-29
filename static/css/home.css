@@ -1,0 +1,10 @@
+.home-content {
+    font-size: 222%;
+    text-align: center;
+}
+
+div#container {
+    margin:0 auto;
+    height:400px;
+    width: 800px;
+}

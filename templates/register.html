@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{# 页面标题 #}
+{% block title %}
+    我的网站|注册
+{% endblock %}
+
+{# 头部扩展 #}
+{% block head-expend %}
+{% endblock %}
+
+{% block nav_home_active %}
+    
+{% endblock %}
+
+{# 页面内容 #}
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                {% if not request.user.is_authenticated %}
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <form class='form-horizontal' action='' method='POST'>
+                                {% csrf_token %}
+                                {% for field in register_form.visible_fields %}
+                                    <div class="form-group">
+                                        <label class='col-md-2 control-label' for={{ field.id_for_label }}>
+                                            {{ field.label }}
+                                        </label>
+                                        <div class="col-md-10">
+                                            {{ field }}
+                                            <p class='text-danger'>
+                                                {{ field.errors.as_text }}
+                                            </p>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <p class='text-danger' id='tip'>
+                                    {{register_form.non_field_errors.as_text}}
+                                </p>
+                                <div class="clearfix"></div>
+                                <button id='send_email' class='btn btn-primary '>
+                                    发送验证码
+                                </button>
+                                <button type='submit' class='btn btn-deault pull-right'>
+                                    注册
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>即将跳转到首页</p>
+                    <script type="text/javascript">
+                        window.location.href = '/ '
+                    </script>
+                {% endif %}  
+            </div>
+        </div>
+    </div>
+    
+{% endblock %}
+{% block script_extend %}
+    <script type="text/javascript">
+        $('#send_email').click(function(){
+            var email = $('#id_email').val();
+            if (email == ''){
+                $('#tip').text('邮箱不能为空');
+                return false;
+            }
+            //发送验证码
+            $.ajax({
+                url:{% url 'send_verify_code' %},
+                type:'GET',
+                data:{
+                    'email': email,
+                    'send_for': 'register',
+                },
+                cache: false,
+                success:function(data){
+                    if (data['status'] == 'ERROR'){
+                        alert(data['status'])
+                    }
+                }
+            })
+            //把按钮变灰
+            $(this).addClass('disabled');
+            $(this).attr('disabled', true);
+            var time = 30
+            $(this).text(time + '秒后可重新发送')
+            var interval = setInterval(() => {
+                if (time <= 0) {
+                    clearInterval(interval);
+                    $(this).removeClass('disabled');
+                    $(this).attr('disabled', false);
+                    $(this).text('发送验证码');
+                    return false;
+                }
+                time --;
+                $(this).text(time + '秒后可重新发送')
+            }, 1000)
+            return false
+        });
+    </script>
+{% endblock %}
