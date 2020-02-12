@@ -1,7 +1,7 @@
 bottle==0.12.13
 certifi==2018.4.16
 chardet==3.0.4
-Django==2.1.4
+Django==2.2.10
 django-ckeditor==5.6.1
 django-js-asset==1.2.2
 django-tinymce==2.7.0
