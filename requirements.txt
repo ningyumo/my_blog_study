@@ -15,4 +15,4 @@ pywin32==223
 reportlab==3.5.12
 requests==2.18.4
 selenium==3.14.1
-urllib3==1.22
+urllib3==1.26.5
