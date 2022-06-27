@@ -12,7 +12,7 @@ PyMySQL==0.8.1
 pypiwin32==223
 pytz==2018.7
 pywin32==223
-reportlab==3.5.12
+reportlab==3.5.55
 requests==2.18.4
 selenium==3.14.1
 urllib3==1.22
